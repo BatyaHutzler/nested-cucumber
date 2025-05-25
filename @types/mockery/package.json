@@ -1,0 +1,25 @@
+{
+    "name": "@types/mockery",
+    "version": "1.4.33",
+    "description": "TypeScript definitions for mockery",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/mockery",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "jt000",
+            "githubUsername": "jt000",
+            "url": "https://github.com/jt000"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/mockery"
+    },
+    "scripts": {},
+    "dependencies": {},
+    "typesPublisherContentHash": "93cfb05e3a74085de345667bf15dce0eda88151f11ba43782818402c643a1ced",
+    "typeScriptVersion": "4.5"
+}
