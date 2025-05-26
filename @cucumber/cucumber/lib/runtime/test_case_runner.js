@@ -86,7 +86,7 @@ class TestCaseRunner {
         }
         return messages_1.getWorstTestStepResult(this.testStepResults);
     }
-    async invokeStep(step, stepDefinition, hookParameter) {
+    async invokeStep(step, stepDefinition, hookParameter) {//TODO - invokeStep
         return await step_runner_1.default.run({
             defaultTimeout: this.supportCodeLibrary.defaultTimeout,
             hookParameter,
@@ -146,8 +146,10 @@ class TestCaseRunner {
             this.eventBroadcaster.emit('envelope', testCaseStarted);
             // used to determine whether a hook is a Before or After
             let didWeRunStepsYet = false;
-            for (const testStep of this.testCase.testSteps) {
+            for (const testStep of this.testCase.testSteps) {// Here is the loop that runs the test steps
                 await this.aroundTestStep(testStep.id, attempt, async () => {
+                    console.log("From TestCaseRunner.run: ", testStep);
+                    
                     if (value_checker_1.doesHaveValue(testStep.hookId)) {
                         const hookParameter = {
                             gherkinDocument: this.gherkinDocument,
@@ -160,6 +162,8 @@ class TestCaseRunner {
                         return await this.runHook(findHookDefinition(testStep.hookId, this.supportCodeLibrary), hookParameter, !didWeRunStepsYet);
                     }
                     else {
+                        console.log(`Running step ${testStep.pickleStepId} for test case ${this.pickle.name}`);
+                        
                         const pickleStep = this.pickle.steps.find((pickleStep) => pickleStep.id === testStep.pickleStepId);
                         const testStepResult = await this.runStep(pickleStep, testStep);
                         didWeRunStepsYet = true;
@@ -205,7 +209,7 @@ class TestCaseRunner {
         }
         return stepHooksResult;
     }
-    async runStep(pickleStep, testStep) {
+    async runStep(pickleStep, testStep) {// rumStep
         const stepDefinitions = testStep.stepDefinitionIds.map((stepDefinitionId) => {
             return findStepDefinition(stepDefinitionId, this.supportCodeLibrary);
         });

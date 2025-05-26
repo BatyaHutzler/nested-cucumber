@@ -147,7 +147,7 @@ class Runner extends events_1.EventEmitter {
         /**
          * kick off tests in framework
          */
-        let failures = 0;
+        let failures = 0;//אולי כאן יש את כל הפיצ'רים שקיימים
         try {
             failures = await this._framework.run();
             await this._fetchDriverLogs(this._config, caps.excludeDriverLogs);

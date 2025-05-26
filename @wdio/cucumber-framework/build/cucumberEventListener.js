@@ -409,23 +409,24 @@ class CucumberEventListener extends events_1.EventEmitter {
      */
     getPickleIds(caps) {
         const gherkinDocument = this._gherkinDocEvents[this._gherkinDocEvents.length - 1];
-        return [...this._suiteMap.entries()]
+        const pickleIds = [...this._suiteMap.entries()]
             /**
              * match based on capability tags
-             */
+            */
             .filter(([, fakeId]) => (0, utils_1.filterPickles)(caps, this._scenarios.find(s => s.id === fakeId)))
             /**
              * match based on Cucumber pickle filter
-             */
+            */
             .filter(([, fakeId]) => {
-            const pickle = { ...this._scenarios.find(s => s.id === fakeId) };
-            pickle.uri = node_path_1.default.relative(__classPrivateFieldGet(this, _CucumberEventListener_cwd, "f"), pickle.uri);
-            return this._pickleFilter.matches({
-                gherkinDocument,
-                pickle
-            });
-        })
+                const pickle = { ...this._scenarios.find(s => s.id === fakeId) };
+                pickle.uri = node_path_1.default.relative(__classPrivateFieldGet(this, _CucumberEventListener_cwd, "f"), pickle.uri);
+                return this._pickleFilter.matches({
+                    gherkinDocument,
+                    pickle
+                });
+            })
             .map(([id]) => id);
+        return pickleIds;
     }
 }
 _CucumberEventListener_cwd = new WeakMap();

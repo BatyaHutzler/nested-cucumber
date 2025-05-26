@@ -1,18 +1,18 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
     if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
+        desc = { enumerable: true, get: function () { return m[k]; } };
     }
     Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
+}) : (function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
 }));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function (o, v) {
     Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
+}) : function (o, v) {
     o["default"] = v;
 });
 var __importStar = (this && this.__importStar) || function (mod) {
@@ -111,6 +111,36 @@ class CucumberAdapter {
                 pickleFilter: this._pickleFilter
             });
             this._hasTests = this._cucumberReporter.eventListener.getPickleIds(this._capabilities).length > 0;
+            //#region === Collect all scenarios globally ===
+            const fs = require('fs');
+            const glob = require('glob');
+
+            global.ALL_SCENARIOS = {};
+            const featureFiles = glob.sync('./tests/features/**/*.feature'); // שנה נתיב אם צריך
+
+            for (const file of featureFiles) {
+                const content = fs.readFileSync(file, 'utf8');
+                const lines = content.split('\n');
+                let currentScenario = null;
+                for (const line of lines) {
+                    if (line.trim().startsWith('Scenario:')) {
+                        currentScenario = line.trim().replace('Scenario:', '').trim();
+                        global.ALL_SCENARIOS[currentScenario] = { steps: [], file };
+                    } else if (
+                        currentScenario &&
+                        (
+                            line.trim().startsWith('Given') ||
+                            line.trim().startsWith('When') ||
+                            line.trim().startsWith('Then') ||
+                            line.trim().startsWith('And') ||
+                            line.trim().startsWith('But')
+                        )
+                    ) {
+                        global.ALL_SCENARIOS[currentScenario].steps.push(line.trim());
+                    }
+                }
+            }
+            //#endregion === Collect all scenarios globally ===
         }
         catch (runtimeError) {
             await (0, utils_1.executeHooksWithArgs)('after', this._config.after, [runtimeError, this._capabilities, this._specs]);
